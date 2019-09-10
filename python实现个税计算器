@@ -1,0 +1,70 @@
+我们开发了一个个税计算器，输入工资后，打印应缴纳的个税。
+
+个税计算公式：
+
+应纳税所得额 = 工资金额 － 各项社会保险费 - 起征点(3500元)
+纳税 = 应纳税所得额 × 税率 － 速算扣除数
+其中各项社会保险费我们在本程序中设置为0即可，不用考虑。
+
+税率及速算扣除数对应表：
+应纳税所得额	税率	速算扣除数（元）
+不超过 1500 元	3%	0
+超过 1500 元至 4500 元	10%	105
+超过 4500 元至 9000 元	20%	555
+超过 9000 元至 35000 元	25%	1005
+超过 35000 元至 55000 元	30%	2755
+超过 55000 元至 80000 元	35%	5505
+超过 80000 元	45%	13505
+例如工资金额为 5000，那么减去起征点，应纳税所得额为 1500（5000-3500），纳税为 45 元（1500 * 3% - 0）。
+
+程序使用 Python3 运行，执行过程和结果举例如下：
+$ python3 /home/shiyanlou/calculator.py 3500
+0.00
+$ python3 /home/shiyanlou/calculator.py 5000
+45.00
+$ python3 /home/shiyanlou/calculator.py 15000
+1870.00
+需要注意，程序执行的参数只有一个，并且参数为工资金额，需要为整数，如果参数数量不准确或者无法转成整数，需要使用 print 打印错误信息，代码如下：
+
+print("Parameter Error")
+注意工资数额是作为命令行程序的参数的（sys.argv 获取），不要使用 input 获取输入信息。
+
+##代码如下：
+import sys
+def main():
+    # 检查命令行参数合法性，并转换为正确类型
+    if len(sys.argv) != 2:
+        print('Parameter Error')
+        exit()
+    try:
+        income = int(sys.argv[1])
+    except ValueError:
+        print('Parameter Error')
+        exit()
+
+    # 扣除起征点
+    value = income - 3500
+    # 依据落入的税率区间，按照相应的税率参数计算税费
+    if value <= 0:
+        result = 0
+    elif 0 < value <= 1500:
+        result = value * 0.03 - 0
+    elif 1500 < value <= 4500:
+        result = value * 0.1 - 105
+    elif 4500 < value <= 9000:
+        result = value * 0.2 - 555
+    elif 9000 < value <= 35000:
+        result = value * 0.25 - 1005
+    elif 35000 < value <= 55000:
+        result = value * 0.3 - 2755
+    elif 55000 < value <= 80000:
+        result = value * 0.35 - 5505
+    else:
+        result = income * 0.45 - 13505
+
+    # 打印结果
+    print('{:.2f}'.format(result))
+
+
+if __name__ == '__main__':
+    main()
